@@ -1,35 +1,22 @@
 <?php
 
 // Получить URL-адрес, который нужно запросить (например, через GET-параметр 'url')
-$url = $_GET['url'] ?? '';
-
-// Проверить на наличие текущего скрипта в качестве URL
-$current_script = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-if ($url === $current_script) {
-    header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-    echo 'Ошибка: Нельзя запрашивать данный файл.';
-    exit;
-}
+$url = $_GET['url'];
 
 // Инициализировать cURL-сессию
 $ch = curl_init();
 
 // Установить URL, к которому нужно выполнить запрос
 curl_setopt($ch, CURLOPT_URL, $url);
+
+// Включить возможность передачи заголовков
 curl_setopt($ch, CURLOPT_HEADER, 0);
+
+// Включить передачу результата вместо вывода его на экран
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
 // Выполнить запрос и получить ответ
 $response = curl_exec($ch);
-
-// Проверка на ошибки cURL
-if ($response === false) {
-    $error = curl_error($ch);
-    header($_SERVER["SERVER_PROTOCOL"] . " 500 Internal Server Error");
-    echo 'Ошибка cURL: ' . $error;
-    curl_close($ch);
-    exit;
-}
 
 // Получить HTTP-код ответа
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -39,11 +26,17 @@ curl_close($ch);
 
 // Проверить, был ли запрос успешным
 if ($http_code === 200) {
+    // Определить заголовки для передачи файла
+    // Пример для скачивания файла - определяем тип содержимого
     header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename="downloaded_file"'); // Можно изменить на нужное имя
+    // Установить заголовок для обеспечения скачивания
+    header('Content-Disposition: attachment; filename="downloaded_file"'); // Можно изменить на название
     header('Content-Length: ' . strlen($response)); // Длина содержимого
-    echo $response; // Отправить содержимое файла
+
+    // Отправить содержимое файла
+    echo $response;
 } else {
+    // Если не удалось получить файл, вывести сообщение об ошибке
     header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
     echo 'Ошибка: Не удалось получить файл. Код ответа: ' . $http_code;
 }
