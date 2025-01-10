@@ -3,4 +3,4 @@
 web-proxy.php v2.0:
 - Запрет на кеширование
 - Возможность подмены  User-Agent
-- Стандартный user agent: Chrome 114
+- Стандартный агент Chrome 114/Windows 10
