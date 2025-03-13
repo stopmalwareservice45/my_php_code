@@ -137,8 +137,8 @@ function log_and_block($ip, $userAgent, $request_url) {
   
 // Функция отправки уведомлений в Telegram  
 function send_telegram_alert($ip, $userAgent, $request_url) {  
-    $telegram_token = '6846001438:AAH_8hFk2PS1q2CQRJIcBKVPotC3ABFx6V4';  
-    $chat_id = '7139213128';  
+    $telegram_token = '@BOTFATHER TOKEN';  
+    $chat_id = 'CHAT ID';  
     $message = "🚨 Подозрительная активность!\nIP: $ip\nUser-Agent: $userAgent\nURL: $request_url";  
     $telegram_url = "https://api.telegram.org/bot$telegram_token/sendMessage?chat_id=$chat_id&text=" . urlencode($message);  
     file_get_contents($telegram_url);  
